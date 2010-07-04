@@ -1,6 +1,5 @@
 require 'ext/array/move'
 require 'ext/array/rotate'
-require 'ext/string/normalize'
 
 class Chao
   ALPHABET = ('A'..'Z').to_a
@@ -35,11 +34,11 @@ class Chao
   end
   
   def encipher(plaintext)
-    plaintext.normalize(ALPHABET).each_char.map {|c| self + c }.join
+    plaintext.each_char.map {|c| self + c }.join
   end
   
   def decipher(ciphertext)
-    ciphertext.normalize(ALPHABET).each_char.map {|c| self - c }.join
+    ciphertext.each_char.map {|c| self - c }.join
   end
   
   alias inspect to_s
@@ -47,12 +46,16 @@ class Chao
   protected
   
   def +(character)
-    permute! self.plainwheel.index(character)
+    return unless c = normalize(character)
+    
+    permute! self.plainwheel.index(c)
     self.cipherwheel.first
   end
   
   def -(character)
-    permute! self.cipherwheel.index(character)
+    return unless c = normalize(character)
+    
+    permute! self.cipherwheel.index(c)
     self.plainwheel.last
   end
   
@@ -71,5 +74,9 @@ class Chao
   def permute_cipherwheel!(index)
     self.cipherwheel.rotate(index - ZENITH)
     self.cipherwheel.move(ZENITH + 1, NADIR)
+  end
+  
+  def normalize(character)
+    character.upcase if ALPHABET.include?(character.upcase)
   end
 end
