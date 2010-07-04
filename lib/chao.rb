@@ -42,6 +42,8 @@ class Chao
     ciphertext.normalize(ALPHABET).each_char.map {|c| self - c }.join
   end
   
+  alias inspect to_s
+  
   protected
   
   def +(character)
