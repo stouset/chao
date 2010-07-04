@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'chao'
+require 'trollop'
+
+opts = Trollop::options do
+  version "#{$0} 1.0 (c) 2010 Stephen Touset"
+  banner  "usage: #{$0} [-kd] [plainwheel cipherwheel]"
+  
+  opt :key,      'Automatically generate a key', :short => '-k'
+  opt :decipher, 'Decrypt the text on stdin',    :short => '-d'
+end
+
+if opts[:decipher] && opts[:key]
+  Trollop::die :decipher, 'a decryption key cannot be automatically generated'
+end
+
+if opts[:key]
+  ARGV.unshift *Chao.generate_key
+  puts " - Plainwheel:  #{ARGV[0]}"
+  puts " - Cipherwheel: #{ARGV[1]}"
+  puts
+end
+
+chao = Chao.new(ARGV[0], ARGV[1])
+
+case opts[:decipher]
+  when false then puts chao.encipher(STDIN)
+  else            puts chao.decipher(STDIN)
+end
