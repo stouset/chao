@@ -19,10 +19,14 @@ if opts[:key]
   ARGV.unshift *Chao.generate_key
   puts " - Plainwheel:  #{ARGV[0]}"
   puts " - Cipherwheel: #{ARGV[1]}"
-  puts
+  puts "=" * 80
 end
 
-chao = Chao.new(ARGV[0], ARGV[1])
+if ARGV.length != 2
+  raise 'Both a plainwheel and a cipherwheel key must be provided.'
+end
+
+chao = Chao.new *ARGV[0..1]
 
 case opts[:decipher]
   when false then puts chao.encipher(STDIN)

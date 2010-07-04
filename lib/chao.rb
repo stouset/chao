@@ -22,6 +22,10 @@ class Chao
   end
   
   def initialize(*key)
+    key.select {|s| s.upcase.split(//).sort != ALPHABET }.each do |malformed|
+      raise %{Chao keys must be simple alphabet permutations. "#{malformed}" is not such a permutation.}
+    end
+    
     @key = key.map {|s| s.split(//) }
   end
   
